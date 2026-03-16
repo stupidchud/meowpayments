@@ -1,6 +1,6 @@
 # meowpayments
 
-Custom crypto payment gateway built on [NEAR Intents 1-click API](https://1click.chaindefuser.com). Accepts any supported token from any chain and delivers the swapped asset to your wallet.
+Custom crypto payment gateway built on [NEAR Intents 1-click API](https://docs.near-intents.org/integration/distribution-channels/1click-api/about-1click-api). Accepts any supported token from any chain and delivers the swapped asset to your wallet.
 
 ![Language](https://img.shields.io/badge/Go-1.23+-blue.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
