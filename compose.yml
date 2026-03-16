@@ -18,7 +18,7 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "3434:3434"
     env_file:
       - .env
     environment:
