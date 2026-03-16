@@ -1,0 +1,1157 @@
+{
+	"components": {
+		"schemas": {
+			"CreatePaymentRequest": {
+				"description": "CreatePaymentRequest schema",
+				"properties": {
+					"amount_usd": {
+						"nullable": true,
+						"type": "string"
+					},
+					"callback_url": {
+						"type": "string"
+					},
+					"customer_email": {
+						"type": "string"
+					},
+					"dest_address": {
+						"type": "string"
+					},
+					"dest_asset_id": {
+						"type": "string"
+					},
+					"dest_chain": {
+						"type": "string"
+					},
+					"expires_in_seconds": {
+						"type": "integer"
+					},
+					"metadata": {
+						"additionalProperties": {},
+						"type": "object"
+					},
+					"origin_asset_id": {
+						"type": "string"
+					},
+					"origin_refund_address": {
+						"type": "string"
+					},
+					"slippage_bps": {
+						"nullable": true,
+						"type": "integer"
+					}
+				},
+				"required": [
+					"dest_address",
+					"dest_asset_id",
+					"dest_chain"
+				],
+				"type": "object"
+			},
+			"HTTPError": {
+				"description": "HTTPError schema",
+				"properties": {
+					"detail": {
+						"description": "Human readable error message",
+						"nullable": true,
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"nullable": true,
+							"properties": {
+								"more": {
+									"additionalProperties": {
+										"description": "Additional information about the error",
+										"nullable": true
+									},
+									"description": "Additional information about the error",
+									"nullable": true,
+									"type": "object"
+								},
+								"name": {
+									"description": "For example, name of the parameter that caused the error",
+									"type": "string"
+								},
+								"reason": {
+									"description": "Human readable error message",
+									"type": "string"
+								}
+							},
+							"type": "object"
+						},
+						"nullable": true,
+						"type": "array"
+					},
+					"instance": {
+						"nullable": true,
+						"type": "string"
+					},
+					"status": {
+						"description": "HTTP status code",
+						"example": 403,
+						"nullable": true,
+						"type": "integer"
+					},
+					"title": {
+						"description": "Short title of the error",
+						"nullable": true,
+						"type": "string"
+					},
+					"type": {
+						"description": "URL of the error type. Can be used to lookup the error in a documentation",
+						"nullable": true,
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"PaymentListResponse": {
+				"description": "PaymentListResponse schema",
+				"properties": {
+					"page": {
+						"type": "integer"
+					},
+					"page_size": {
+						"type": "integer"
+					},
+					"payments": {
+						"items": {
+							"nullable": true,
+							"properties": {
+								"amount_usd": {
+									"nullable": true,
+									"type": "string"
+								},
+								"callback_url": {
+									"nullable": true,
+									"type": "string"
+								},
+								"created_at": {
+									"format": "date-time",
+									"type": "string"
+								},
+								"customer_email": {
+									"nullable": true,
+									"type": "string"
+								},
+								"deposit_address": {
+									"nullable": true,
+									"type": "string"
+								},
+								"deposit_memo": {
+									"nullable": true,
+									"type": "string"
+								},
+								"dest_address": {
+									"type": "string"
+								},
+								"dest_asset_id": {
+									"type": "string"
+								},
+								"dest_chain": {
+									"type": "string"
+								},
+								"expires_at": {
+									"format": "date-time",
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"metadata": {
+									"additionalProperties": {
+										"nullable": true
+									},
+									"nullable": true,
+									"type": "object"
+								},
+								"origin_asset_id": {
+									"nullable": true,
+									"type": "string"
+								},
+								"payment_url": {
+									"type": "string"
+								},
+								"status": {
+									"type": "string"
+								},
+								"updated_at": {
+									"format": "date-time",
+									"type": "string"
+								}
+							},
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"total": {
+						"format": "int64",
+						"type": "integer"
+					}
+				},
+				"type": "object"
+			},
+			"PaymentResponse": {
+				"description": "PaymentResponse schema",
+				"properties": {
+					"amount_usd": {
+						"nullable": true,
+						"type": "string"
+					},
+					"callback_url": {
+						"nullable": true,
+						"type": "string"
+					},
+					"created_at": {
+						"format": "date-time",
+						"type": "string"
+					},
+					"customer_email": {
+						"nullable": true,
+						"type": "string"
+					},
+					"deposit_address": {
+						"nullable": true,
+						"type": "string"
+					},
+					"deposit_memo": {
+						"nullable": true,
+						"type": "string"
+					},
+					"dest_address": {
+						"type": "string"
+					},
+					"dest_asset_id": {
+						"type": "string"
+					},
+					"dest_chain": {
+						"type": "string"
+					},
+					"expires_at": {
+						"format": "date-time",
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"metadata": {
+						"additionalProperties": {
+							"nullable": true
+						},
+						"nullable": true,
+						"type": "object"
+					},
+					"origin_asset_id": {
+						"nullable": true,
+						"type": "string"
+					},
+					"payment_url": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"updated_at": {
+						"format": "date-time",
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"SubmitDepositRequest": {
+				"description": "SubmitDepositRequest schema",
+				"properties": {
+					"tx_hash": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"tx_hash"
+				],
+				"type": "object"
+			},
+			"TokenListResponse": {
+				"description": "TokenListResponse schema",
+				"properties": {
+					"count": {
+						"type": "integer"
+					},
+					"tokens": {
+						"items": {
+							"properties": {
+								"asset_id": {
+									"type": "string"
+								},
+								"blockchain": {
+									"type": "string"
+								},
+								"contract_address": {
+									"nullable": true,
+									"type": "string"
+								},
+								"decimals": {
+									"type": "integer"
+								},
+								"price_usd": {
+									"format": "double",
+									"type": "number"
+								},
+								"symbol": {
+									"type": "string"
+								}
+							},
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object"
+			},
+			"healthResponse": {
+				"description": "healthResponse schema",
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"timestamp": {
+						"format": "date-time",
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"unknown-interface": {
+				"description": "unknown-interface schema"
+			}
+		}
+	},
+	"info": {
+		"description": "\nThis is the autogenerated OpenAPI documentation for your [Fuego](https://github.com/go-fuego/fuego) API.\n\nBelow is a Fuego Cheatsheet to help you get started. Don't hesitate to check the [Fuego documentation](https://go-fuego.dev) for more details.\n\nHappy coding! 🔥\n\n## Usage\n\n### Route registration\n\n```go\nfunc main() {\n\t// Create a new server\n\ts := fuego.NewServer()\n\n\t// Register some routes\n\tfuego.Post(s, \"/hello\", myController)\n\tfuego.Get(s, \"/myPath\", otherController)\n\tfuego.Put(s, \"/hello\", thirdController)\n\n\tadminRoutes := fuego.Group(s, \"/admin\")\n\tfuego.Use(adminRoutes, myMiddleware) // This middleware (for authentication, etc...) will be available for routes starting by /admin/*, \n\tfuego.Get(adminRoutes, \"/hello\", groupController) // This route will be available at /admin/hello\n\n\t// Start the server\n\ts.Start()\n}\n```\n\n### Basic controller\n\n```go\ntype MyBody struct {\n\tName string `json:\"name\" validate:\"required,max=30\"`\n}\n\ntype MyResponse struct {\n\tAnswer string `json:\"answer\"`\n}\n\nfunc hello(ctx fuego.ContextWithBody[MyBody]) (*MyResponse, error) {\n\tbody, err := ctx.Body()\n\tif err != nil {\n\t\treturn nil, err\n\t}\n\n\treturn \u0026MyResponse{Answer: \"Hello \" + body.Name}, nil\n}\n```\n\n### Add openAPI information to the route\n\n```go\nimport (\n\t\"github.com/go-fuego/fuego\"\n\t\"github.com/go-fuego/fuego/option\"\n\t\"github.com/go-fuego/fuego/param\"\n)\n\nfunc main() {\n\ts := fuego.NewServer()\n\n\t// Custom OpenAPI options\n\tfuego.Post(s, \"/\", myController\n\t\toption.Description(\"This route does something...\"),\n\t\toption.Summary(\"This is my summary\"),\n\t\toption.Tags(\"MyTag\"), // A tag is set by default according to the return type (can be deactivated)\n\t\toption.Deprecated(), // Marks the route as deprecated in the OpenAPI spec\n\n\t\toption.Query(\"name\", \"Declares a query parameter with default value\", param.Default(\"Carmack\")),\n\t\toption.Header(\"Authorization\", \"Bearer token\", param.Required()),\n\t\toptionPagination,\n\t\toptionCustomBehavior,\n\t)\n\n\ts.Run()\n}\n\nvar optionPagination = option.Group(\n\toption.QueryInt(\"page\", \"Page number\", param.Default(1), param.Example(\"1st page\", 1), param.Example(\"42nd page\", 42)),\n\toption.QueryInt(\"perPage\", \"Number of items per page\"),\n)\n\nvar optionCustomBehavior = func(r *fuego.BaseRoute) {\n\tr.XXX = \"YYY\"\n}\n```\n\nThen, in the controller\n\n```go\ntype MyResponse struct {\n\tAnswer string `json:\"answer\"`\n}\n\nfunc getAllPets(ctx fuego.ContextNoBody) (*MyResponse, error) {\n\tname := ctx.QueryParam(\"name\")\n\tperPage, _ := ctx.QueryParamIntErr(\"per_page\")\n\n\treturn \u0026MyResponse{Answer: \"Hello \" + name}, nil\n}\n```\n",
+		"title": "OpenAPI",
+		"version": "0.0.1"
+	},
+	"openapi": "3.1.0",
+	"paths": {
+		"/v1/health": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.Health`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n\n---\n\n",
+				"operationId": "GET_/v1/health",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/healthResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/healthResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "health"
+			}
+		},
+		"/v1/pay/{id}": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).GetPublic`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n\n---\n\n",
+				"operationId": "GET_/v1/pay/:id",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "get public"
+			}
+		},
+		"/v1/pay/{id}/submit": {
+			"post": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).SubmitDeposit`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n\n---\n\n",
+				"operationId": "POST_/v1/pay/:id/submit",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"*/*": {
+							"schema": {
+								"$ref": "#/components/schemas/SubmitDepositRequest"
+							}
+						}
+					},
+					"description": "Request body for dto.SubmitDepositRequest",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "submit deposit"
+			}
+		},
+		"/v1/pay/{id}/ws": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*WSHandlers).Payment`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n\n---\n\n",
+				"operationId": "GET_/v1/pay/:id/ws",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "payment"
+			}
+		},
+		"/v1/payments": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).List`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.Middleware.func5`\n\n---\n\n",
+				"operationId": "GET_/v1/payments",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentListResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentListResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "list",
+				"tags": [
+					"v1"
+				]
+			},
+			"post": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).Create`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.Middleware.func5`\n\n---\n\n",
+				"operationId": "POST_/v1/payments",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"*/*": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePaymentRequest"
+							}
+						}
+					},
+					"description": "Request body for dto.CreatePaymentRequest",
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "create",
+				"tags": [
+					"v1"
+				]
+			}
+		},
+		"/v1/payments/{id}": {
+			"delete": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).Cancel`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.Middleware.func5`\n\n---\n\n",
+				"operationId": "DELETE_/v1/payments/:id",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "cancel",
+				"tags": [
+					"v1"
+				]
+			},
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).Get`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.Middleware.func5`\n\n---\n\n",
+				"operationId": "GET_/v1/payments/:id",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "get",
+				"tags": [
+					"v1"
+				]
+			}
+		},
+		"/v1/payments/{id}/events": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*PaymentHandlers).GetEvents`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.Middleware.func5`\n\n---\n\n",
+				"operationId": "GET_/v1/payments/:id/events",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "get events",
+				"tags": [
+					"v1"
+				]
+			}
+		},
+		"/v1/tokens": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*TokenHandlers).List`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n\n---\n\n",
+				"operationId": "GET_/v1/tokens",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenListResponse"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenListResponse"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "list"
+			}
+		},
+		"/v1/ws": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/meowpayments/meowpayments/internal/api/handlers.(*WSHandlers).Global`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.CORS.func4`\n- `github.com/meowpayments/meowpayments/internal/api.NewServer.Middleware.func5`\n\n---\n\n",
+				"operationId": "GET_/v1/ws",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "global",
+				"tags": [
+					"v1"
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3434/"
+		}
+	],
+	"tags": [
+		{
+			"name": "v1"
+		}
+	]
+}

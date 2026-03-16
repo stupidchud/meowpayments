@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: meowpayments
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: meowpayments
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meowpayments"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://meowpayments:secret@db:5432/meowpayments?sslmode=disable
+      DB_MIGRATIONS_DIR: /app/migrations
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

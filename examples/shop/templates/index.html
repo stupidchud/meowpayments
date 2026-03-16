@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Shop{% endblock %}
+
+{% block head %}
+<style>
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+  .page-header p {
+    color: var(--color-muted);
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .product-card {
+    background: var(--color-surface);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: background 0.15s;
+  }
+  .product-card:hover { background: var(--color-surface-2); }
+
+  .product-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius);
+    background: var(--color-accent-dim);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--color-muted);
+  }
+
+  .product-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .product-desc {
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    flex: 1;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+  }
+
+  .product-price {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .product-price small {
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    font-weight: 300;
+    margin-left: 2px;
+  }
+
+  .add-btn {
+    background: var(--color-accent-dim);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .add-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .add-btn.added {
+    color: var(--color-success);
+    border-color: rgba(52,211,153,0.3);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Products</h1>
+  <p>Pay with any crypto - converted automatically via NEAR Intents.</p>
+</div>
+
+<div class="product-grid">
+  {% for p in products %}
+  <div class="product-card">
+    <div class="product-icon">
+      <i class="fa-solid {{ p.image_icon }}"></i>
+    </div>
+    <div class="product-name">{{ p.name }}</div>
+    <div class="product-desc">{{ p.description }}</div>
+    <div class="product-footer">
+      <div class="product-price">${{ p.price_usd }}<small>USD</small></div>
+      <button class="add-btn" onclick="addToCart('{{ p.id }}', this)">
+        <i class="fa-solid fa-plus"></i> Add
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function addToCart(product_id, btn) {
+    Cart.add(product_id);
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Added';
+    setTimeout(() => {
+      btn.classList.remove('added');
+      btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
+    }, 1400);
+  }
+</script>
+{% endblock %}

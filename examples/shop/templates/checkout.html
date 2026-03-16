@@ -1,0 +1,584 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block head %}
+<style>
+  .checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    .checkout-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Cart items ── */
+  .section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+    margin-bottom: 1rem;
+  }
+
+  .cart-empty {
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--color-muted);
+  }
+  .cart-empty i { font-size: 2rem; margin-bottom: 1rem; display: block; }
+
+  .line-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .line-item:last-child { border-bottom: none; }
+
+  .line-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    background: var(--color-accent-dim);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    flex-shrink: 0;
+  }
+
+  .line-info { flex: 1; min-width: 0; }
+  .line-name { font-size: 0.9rem; font-weight: 400; }
+  .line-meta { font-size: 0.78rem; color: var(--color-muted); margin-top: 2px; }
+
+  .line-qty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .qty-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--color-border);
+    background: var(--color-accent-dim);
+    color: var(--color-text);
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: background 0.1s;
+  }
+  .qty-btn:hover { background: rgba(255,255,255,0.1); }
+  .qty-val { font-size: 0.85rem; min-width: 20px; text-align: center; }
+
+  .line-price { font-size: 0.9rem; font-weight: 400; text-align: right; min-width: 60px; }
+
+  .remove-btn {
+    background: none;
+    border: none;
+    color: var(--color-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px;
+    border-radius: var(--radius);
+    transition: color 0.15s;
+  }
+  .remove-btn:hover { color: var(--color-danger); }
+
+  /* ── Summary card ── */
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    padding: 0.4rem 0;
+  }
+  .summary-row.total {
+    font-size: 1rem;
+    font-weight: 500;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .email-field {
+    width: 100%;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-family: var(--font-main);
+    font-size: 0.875rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.15s;
+    margin-top: 1rem;
+  }
+  .email-field:focus { border-color: rgba(255,255,255,0.25); }
+  .email-field::placeholder { color: var(--color-muted); }
+
+  .pay-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .crypto-note {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    text-align: center;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  /* ── Token picker ── */
+  .token-picker-wrap { margin-top: 1rem; }
+
+  .token-selected-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-family: var(--font-main);
+    font-size: 0.875rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color 0.15s;
+    text-align: left;
+  }
+  .token-selected-btn:hover { border-color: rgba(255,255,255,0.2); }
+  .token-selected-btn .chevron { margin-left: auto; color: var(--color-muted); font-size: 0.7rem; }
+
+  .token-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .token-dropdown {
+    display: none;
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+  }
+  .token-dropdown.open { display: block; }
+
+  .token-search-wrap {
+    position: relative;
+    background: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .token-search-wrap i {
+    position: absolute; left: 0.75rem; top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-muted); font-size: 0.8rem; pointer-events: none;
+  }
+  .token-search {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    padding: 0.55rem 0.75rem 0.55rem 2.1rem;
+    outline: none;
+  }
+  .token-search::placeholder { color: var(--color-muted); }
+
+  .token-list {
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--color-surface);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  .token-group-header {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    padding: 0.4rem 0.75rem 0.2rem;
+    background: var(--color-surface);
+    position: sticky; top: 0; z-index: 1;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .token-option {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.1s;
+  }
+  .token-option:last-child { border-bottom: none; }
+  .token-option:hover { background: var(--color-accent-dim); }
+  .token-option.selected { background: rgba(229,231,235,0.05); }
+
+  .token-symbol { font-weight: 500; min-width: 50px; }
+  .token-network { color: var(--color-muted); flex: 1; }
+  .token-price   { color: var(--color-muted); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .token-check   { width: 14px; text-align: center; color: var(--color-success); font-size: 0.75rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:2rem; display:flex; align-items:center; gap:1rem;">
+  <a href="/" class="btn btn-ghost" style="padding:0.4rem 0.7rem;">
+    <i class="fa-solid fa-arrow-left"></i>
+  </a>
+  <h1>Checkout</h1>
+</div>
+
+<div class="checkout-layout">
+  <!-- Left: cart items -->
+  <div>
+    <div class="section-label">Your cart</div>
+    <div id="cart-items"></div>
+  </div>
+
+  <!-- Right: order summary -->
+  <div class="card" id="summary-card">
+    <div class="section-label">Order summary</div>
+    <div id="summary-lines"></div>
+    <hr style="margin:0.75rem 0;" />
+    <div class="summary-row total">
+      <span>Total</span>
+      <span id="summary-total">$0.00</span>
+    </div>
+
+    <input
+      type="email"
+      id="customer-email"
+      class="email-field"
+      placeholder="Email (optional - for receipt)"
+    />
+
+    <!-- Token picker -->
+    <div class="token-picker-wrap">
+      <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted); margin-bottom:0.4rem;">
+        Pay with
+      </div>
+      <button class="token-selected-btn" id="token-btn" onclick="toggleDropdown()">
+        <span class="token-dot" id="sel-dot" style="background:var(--color-muted)"></span>
+        <span id="sel-label">Any token</span>
+        <i class="fa-solid fa-chevron-down chevron" id="sel-chevron"></i>
+      </button>
+      <div class="token-dropdown" id="token-dropdown">
+        <div class="token-search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            id="token-search"
+            class="token-search"
+            type="text"
+            placeholder="Search token or network…"
+            oninput="filterTokens(this.value)"
+            autocomplete="off"
+          />
+        </div>
+        <div class="token-list" id="token-list">
+          <div style="padding:0.75rem; color:var(--color-muted); font-size:0.82rem; text-align:center;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refund address - shown only when a specific token/chain is selected -->
+    <div id="refund-wrap" style="display:none; margin-top:0.75rem;">
+      <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted); margin-bottom:0.4rem;">
+        Your <span id="refund-chain-label">wallet</span> address <span class="tag">for refunds</span>
+      </div>
+      <input
+        id="refund-address"
+        type="text"
+        class="email-field"
+        style="margin-top:0; font-family:monospace; font-size:0.8rem;"
+        placeholder="0x… or your chain address"
+        autocomplete="off"
+      />
+      <div class="muted" style="font-size:0.72rem; margin-top:0.3rem;">
+        Only used if the swap fails. Leave blank to skip.
+      </div>
+    </div>
+
+    <button id="pay-btn" class="btn btn-primary pay-btn" onclick="startCheckout()" style="margin-top:1rem;">
+      <i class="fa-solid fa-lock"></i>
+      Pay with crypto
+    </button>
+
+    <p class="crypto-note">
+      <i class="fa-solid fa-bolt"></i>
+      Converted automatically via NEAR Intents
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // ── Token picker ──────────────────────────────────────────────────────────
+  let ALL_TOKENS = [];
+  let selectedToken = JSON.parse(sessionStorage.getItem('selected_token') || 'null');
+
+  const NET_LABEL = {
+    near:'NEAR', eth:'Ethereum', sol:'Solana', btc:'Bitcoin',
+    bnb:'BNB Chain', arb:'Arbitrum', base:'Base', op:'Optimism',
+    zksync:'zkSync', polygon:'Polygon', avax:'Avalanche',
+    ton:'TON', xrp:'XRP', doge:'Dogecoin',
+  };
+  const NET_COLOR = {
+    near:'#6ee7b7', eth:'#a78bfa', sol:'#fbbf24', btc:'#fb923c',
+    bnb:'#fde68a', arb:'#60a5fa', base:'#818cf8', op:'#f87171',
+    zksync:'#c4b5fd', polygon:'#a855f7', avax:'#ef4444',
+    ton:'#38bdf8', xrp:'#94a3b8', doge:'#fbbf24',
+  };
+
+  function netLabel(b) { return NET_LABEL[b.toLowerCase()] || b.toUpperCase(); }
+  function netColor(b) { return NET_COLOR[b.toLowerCase()] || 'var(--color-muted)'; }
+
+  async function loadTokens() {
+    try {
+      const res = await fetch('/api/tokens');
+      const data = await res.json();
+      ALL_TOKENS = (data.tokens || []).sort((a, b) => b.price_usd - a.price_usd);
+      renderTokenList(ALL_TOKENS);
+      updateSelectedBtn();
+    } catch (_) {
+      document.getElementById('token-list').innerHTML =
+        '<div style="padding:0.75rem;color:var(--color-muted);font-size:0.82rem;">Could not load tokens.</div>';
+    }
+  }
+
+  function toggleDropdown() {
+    const dd = document.getElementById('token-dropdown');
+    const ch = document.getElementById('sel-chevron');
+    const open = dd.classList.toggle('open');
+    ch.style.transform = open ? 'rotate(180deg)' : '';
+    if (open) document.getElementById('token-search').focus();
+  }
+
+  function filterTokens(q) {
+    q = q.trim().toLowerCase();
+    renderTokenList(q ? ALL_TOKENS.filter(t =>
+      t.symbol.toLowerCase().includes(q) ||
+      t.blockchain.toLowerCase().includes(q) ||
+      netLabel(t.blockchain).toLowerCase().includes(q)
+    ) : ALL_TOKENS);
+  }
+
+  function renderTokenList(tokens) {
+    const container = document.getElementById('token-list');
+    if (!tokens.length) {
+      container.innerHTML = '<div style="padding:0.75rem;color:var(--color-muted);font-size:0.82rem;text-align:center;">No tokens found.</div>';
+      return;
+    }
+    const groups = {};
+    tokens.forEach(t => { const k = t.blockchain.toLowerCase(); (groups[k] = groups[k]||[]).push(t); });
+    let html = '';
+    for (const [chain, list] of Object.entries(groups)) {
+      html += `<div class="token-group-header">${netLabel(chain)}</div>`;
+      list.forEach(t => {
+        const sel = selectedToken?.asset_id === t.asset_id;
+        html += `<div class="token-option${sel?' selected':''}" onclick="selectToken(${JSON.stringify(t).replace(/"/g,'&quot;')})">
+          <span class="token-dot" style="background:${netColor(chain)}"></span>
+          <span class="token-symbol">${t.symbol}</span>
+          <span class="token-network">${netLabel(chain)}</span>
+          <span class="token-price">$${t.price_usd > 0 ? t.price_usd.toLocaleString(undefined,{maximumFractionDigits:2}) : '—'}</span>
+          <span class="token-check">${sel?'<i class="fa-solid fa-check"></i>':''}</span>
+        </div>`;
+      });
+    }
+    container.innerHTML = html;
+  }
+
+  function selectToken(token) {
+    selectedToken = token;
+    sessionStorage.setItem('selected_token', JSON.stringify(token));
+    updateSelectedBtn();
+    renderTokenList(ALL_TOKENS.filter(t => {
+      const q = document.getElementById('token-search').value.trim().toLowerCase();
+      return !q || t.symbol.toLowerCase().includes(q) ||
+             t.blockchain.toLowerCase().includes(q) ||
+             netLabel(t.blockchain).toLowerCase().includes(q);
+    }));
+    // Close dropdown
+    document.getElementById('token-dropdown').classList.remove('open');
+    document.getElementById('sel-chevron').style.transform = '';
+  }
+
+  function updateSelectedBtn() {
+    const dot         = document.getElementById('sel-dot');
+    const label       = document.getElementById('sel-label');
+    const refundWrap  = document.getElementById('refund-wrap');
+    const refundChain = document.getElementById('refund-chain-label');
+    if (selectedToken) {
+      dot.style.background = netColor(selectedToken.blockchain);
+      label.textContent = `${selectedToken.symbol} on ${netLabel(selectedToken.blockchain)}`;
+      refundWrap.style.display = '';
+      refundChain.textContent = netLabel(selectedToken.blockchain);
+      document.getElementById('refund-address').placeholder =
+        selectedToken.blockchain.toLowerCase() === 'sol' ? 'Base58 Solana address' :
+        selectedToken.blockchain.toLowerCase() === 'near' ? 'yourname.near or 64-char hex' :
+        '0x… address';
+    } else {
+      dot.style.background = 'var(--color-muted)';
+      label.textContent = 'Any token';
+      refundWrap.style.display = 'none';
+    }
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.token-picker-wrap')) {
+      document.getElementById('token-dropdown').classList.remove('open');
+      document.getElementById('sel-chevron').style.transform = '';
+    }
+  });
+
+  // ── Product catalogue (fetched once) ──────────────────────────────────────
+  let PRODUCTS = {};
+
+  async function init() {
+    const res = await fetch('/api/products');
+    const list = await res.json();
+    list.forEach(p => PRODUCTS[p.id] = p);
+    renderCart();
+    loadTokens();
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  function renderCart() {
+    const items = Cart.get();
+    const container = document.getElementById('cart-items');
+    const summaryLines = document.getElementById('summary-lines');
+    const totalEl = document.getElementById('summary-total');
+    const payBtn = document.getElementById('pay-btn');
+
+    if (items.length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <div>Your cart is empty.</div>
+          <a href="/" class="btn btn-ghost" style="margin-top:1rem;">Browse products</a>
+        </div>`;
+      summaryLines.innerHTML = '';
+      totalEl.textContent = '$0.00';
+      payBtn.disabled = true;
+      return;
+    }
+
+    payBtn.disabled = false;
+
+    let total = 0;
+    container.innerHTML = items.map(item => {
+      const p = PRODUCTS[item.product_id];
+      if (!p) return '';
+      const lineTotal = (parseFloat(p.price_usd) * item.qty).toFixed(2);
+      total += parseFloat(lineTotal);
+      return `
+        <div class="line-item">
+          <div class="line-icon"><i class="fa-solid ${p.image_icon}"></i></div>
+          <div class="line-info">
+            <div class="line-name">${p.name}</div>
+            <div class="line-meta">$${p.price_usd} each</div>
+          </div>
+          <div class="line-qty">
+            <button class="qty-btn" onclick="changeQty('${p.id}', -1)"><i class="fa-solid fa-minus"></i></button>
+            <span class="qty-val">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${p.id}', 1)"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div class="line-price">$${lineTotal}</div>
+          <button class="remove-btn" onclick="removeItem('${p.id}')" title="Remove">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>`;
+    }).join('');
+
+    summaryLines.innerHTML = items.map(item => {
+      const p = PRODUCTS[item.product_id];
+      if (!p) return '';
+      return `
+        <div class="summary-row">
+          <span class="muted">${p.name} × ${item.qty}</span>
+          <span>$${(parseFloat(p.price_usd) * item.qty).toFixed(2)}</span>
+        </div>`;
+    }).join('');
+
+    totalEl.textContent = `$${total.toFixed(2)}`;
+  }
+
+  function changeQty(product_id, delta) {
+    const items = Cart.get();
+    const item = items.find(i => i.product_id === product_id);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    Cart.save(items);
+    renderCart();
+  }
+
+  function removeItem(product_id) {
+    Cart.remove(product_id);
+    renderCart();
+  }
+
+  // ── Checkout ──────────────────────────────────────────────────────────────
+  async function startCheckout() {
+    const btn = document.getElementById('pay-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating payment…';
+
+    const items = Cart.get();
+    const email = document.getElementById('customer-email').value.trim();
+
+    try {
+      const selectedToken = JSON.parse(sessionStorage.getItem('selected_token') || 'null');
+      const refundAddress = document.getElementById('refund-address')?.value.trim() || '';
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items,
+          customer_email: email,
+          origin_asset_id: selectedToken?.asset_id || '',
+          origin_refund_address: refundAddress,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || 'Checkout failed');
+      }
+      const order = await res.json();
+      Cart.clear();
+      window.location = `/payment/${order.id}`;
+    } catch (e) {
+      toast('Error: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-lock"></i> Pay with crypto';
+    }
+  }
+
+  init();
+</script>
+{% endblock %}
