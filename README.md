@@ -2,6 +2,8 @@
 
 Custom crypto payment gateway built on [NEAR Intents 1-click API](https://docs.near-intents.org/integration/distribution-channels/1click-api/about-1click-api). Accepts any supported token from any chain and delivers the swapped asset to your wallet.
 
+Created as a more privacy-focused, self-hosted alternative to NowPayments.
+
 ![Language](https://img.shields.io/badge/Go-1.23+-blue.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
